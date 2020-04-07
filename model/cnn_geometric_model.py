@@ -9,6 +9,7 @@ class FeatureExtraction(torch.nn.Module):
         super(FeatureExtraction, self).__init__()
         if feature_extraction_cnn == 'vgg':
             self.model = models.vgg16(pretrained=True)
+            self.featurept = models.vgg16(pretrained=True)
             # keep feature extraction network up to indicated layer
             vgg_feature_layers=['conv1_1','relu1_1','conv1_2','relu1_2','pool1','conv2_1',
                          'relu2_1','conv2_2','relu2_2','pool2','conv3_1','relu3_1',
@@ -17,8 +18,10 @@ class FeatureExtraction(torch.nn.Module):
                          'conv5_1','relu5_1','conv5_2','relu5_2','conv5_3','relu5_3','pool5']
             if last_layer=='':
                 last_layer = 'pool4'
+                #last_layer = 'relu1_2'		
             last_layer_idx = vgg_feature_layers.index(last_layer)
             self.model = nn.Sequential(*list(self.model.features.children())[:last_layer_idx+1])
+            self.featurept = nn.Sequential(*list(self.model.features.children())[:3+1])
         if feature_extraction_cnn == 'resnet101':
             self.model = models.resnet101(pretrained=True)
             resnet_feature_layers = ['conv1',
@@ -119,6 +122,8 @@ class CNNGeometric(nn.Module):
         # do feature extraction
         feature_A = self.FeatureExtraction(tnf_batch['source_image'])
         feature_B = self.FeatureExtraction(tnf_batch['target_image'])
+        #print("A",feature_A.size())
+        #print("A",sap_A, "B", sapB)
         # normalize
         if self.normalize_features:
             feature_A = self.FeatureL2Norm(feature_A)
@@ -133,4 +138,6 @@ class CNNGeometric(nn.Module):
         theta = self.FeatureRegression(correlation)
 
         return theta
+        '''theta = torch.tensor([[ 0.9067, -0.0090,  0.1940,  0.0861,  0.8080, -0.3511]])
+        return theta'''
     

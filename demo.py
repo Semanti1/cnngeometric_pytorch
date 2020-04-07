@@ -37,7 +37,7 @@ parser = argparse.ArgumentParser(description='CNNGeometric PyTorch implementatio
 parser.add_argument('--model-aff', type=str, default='trained_models/best_pascal_checkpoint_adam_affine_grid_loss_resnet_random.pth.tar', help='Trained affine model filename')
 parser.add_argument('--model-tps', type=str, default='trained_models/best_pascal_checkpoint_adam_tps_grid_loss_resnet_random.pth.tar', help='Trained TPS model filename')
 parser.add_argument('--feature-extraction-cnn', type=str, default='resnet101', help='Feature extraction architecture: vgg/resnet101')
-parser.add_argument('--pf-path', type=str, default='datasets/PF-dataset', help='Path to PF dataset')
+parser.add_argument('--pf-path', type=str, default='datasets/PF-dataset/', help='Path to PF dataset')
 
 args = parser.parse_args()
 
@@ -69,7 +69,7 @@ if do_tps:
     model_tps.load_state_dict(checkpoint['state_dict'])
 
 # Dataset and dataloader
-dataset = PFDataset(csv_file=os.path.join(args.pf_path, 'test_pairs_pf.csv'),
+dataset = PFDataset(csv_file=os.path.join(args.pf_path,'PF-dataset', 'test_pairs_pf_buildings.csv'),
                     training_image_path=args.pf_path,
                     transform=NormalizeImageDict(['source_image','target_image']))
 dataloader = DataLoader(dataset, batch_size=1,
@@ -82,22 +82,23 @@ pt = PointTnf(use_cuda=use_cuda)
 # Instatiate image transformers
 tpsTnf = GeometricTnf(geometric_model='tps', use_cuda=use_cuda)
 affTnf = GeometricTnf(geometric_model='affine', use_cuda=use_cuda)
-
+#print(dataloader)
 
 for i, batch in enumerate(dataloader):
     # get random batch of size 1
     batch = batchTensorToVars(batch)
-    
+    #print("batch",batch,batch['source_image'])    
     source_im_size = batch['source_im_size']
     target_im_size = batch['target_im_size']
 
     source_points = batch['source_points']
     target_points = batch['target_points']
-    
+    print('src pts', source_points)
     # warp points with estimated transformations
     target_points_norm = PointsToUnitCoords(target_points,target_im_size)
     
     if do_aff:
+        #pass
         model_aff.eval()
     if do_tps:
         model_tps.eval()
@@ -105,15 +106,19 @@ for i, batch in enumerate(dataloader):
     # Evaluate models
     if do_aff:
         theta_aff=model_aff(batch)
+        print("theta_aff", theta_aff)
         warped_image_aff = affTnf(batch['source_image'],theta_aff.view(-1,2,3))
         
     if do_tps:
         theta_tps=model_tps(batch)
+        print("tht tps",theta_tps)
         warped_image_tps = tpsTnf(batch['source_image'],theta_tps)
         
     if do_aff and do_tps:
         theta_aff_tps=model_tps({'source_image': warped_image_aff, 'target_image': batch['target_image']})        
+        print("tht aff tps",theta_aff_tps)
         warped_image_aff_tps = tpsTnf(warped_image_aff,theta_aff_tps)
+        print(warped_image_aff_tps.size())	
 
     # Un-normalize images and convert to numpy
     source_image = normalize_image(batch['source_image'],forward=False)
@@ -136,7 +141,7 @@ for i, batch in enumerate(dataloader):
     # check if display is available
     exit_val = os.system('python -c "import matplotlib.pyplot as plt;plt.figure()"  > /dev/null 2>&1')
     display_avail = exit_val==0
-
+    display_avail = 0
     if display_avail:
         N_subplots = 2+int(do_aff)+int(do_tps)+int(do_aff and do_tps)
         fig, axs = plt.subplots(1,N_subplots)

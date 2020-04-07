@@ -27,7 +27,7 @@ print('CNNGeometric training script')
 # Argument parsing
 parser = argparse.ArgumentParser(description='CNNGeometric PyTorch implementation')
 # Paths
-parser.add_argument('--training-dataset', type=str, default='pascal', help='dataset to use for training')
+parser.add_argument('--training-dataset', type=str, default='', help='dataset to use for training')
 parser.add_argument('--training-tnf-csv', type=str, default='', help='path to training transformation csv folder')
 parser.add_argument('--training-image-path', type=str, default='', help='path to folder containing training images')
 parser.add_argument('--trained-models-dir', type=str, default='trained_models', help='path to trained models folder')
@@ -49,10 +49,12 @@ parser.add_argument('--random-sample', type=str_to_bool, nargs='?', const=True, 
 args = parser.parse_args()
 
 use_cuda = torch.cuda.is_available()
-
+#print("device",device)
 # Seed
 torch.manual_seed(args.seed)
 if use_cuda:
+    dev = "cuda:0"
+    device = torch.device(dev)
     torch.cuda.manual_seed(args.seed)
 
 # Download dataset if needed and set paths

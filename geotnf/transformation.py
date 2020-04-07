@@ -106,6 +106,7 @@ class SynthPairTnf(object):
                                  image_batch.index_select(3,idx_pad_right)),3)
         image_batch = torch.cat((image_batch.index_select(2,idx_pad_top),image_batch,
                                  image_batch.index_select(2,idx_pad_bottom)),2)
+        
         return image_batch
 
     
@@ -256,6 +257,8 @@ class TpsGridGen(Module):
                        torch.mul(A_Y[:,:,:,:,1],points_X_batch) + \
                        torch.mul(A_Y[:,:,:,:,2],points_Y_batch) + \
                        torch.sum(torch.mul(W_Y,U.expand_as(W_Y)),4)
+
+        print('x_pr',points_X_prime.shape)
         
         return torch.cat((points_X_prime,points_Y_prime),3)
         

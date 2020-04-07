@@ -25,6 +25,8 @@ class PointTnf(object):
     
     def affPointTnf(self,theta,points):
         theta_mat = theta.view(-1,2,3)
+        print("theta_mat",theta_mat)
+        print("theta_mat[:,:,:2]",theta_mat[:,:,:2])
         warped_points = torch.bmm(theta_mat[:,:,:2],points)
         warped_points += theta_mat[:,:,2].unsqueeze(2).expand_as(warped_points)
         return warped_points 
