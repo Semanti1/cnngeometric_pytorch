@@ -10,7 +10,7 @@ certifi==2019.6.16
 cffi==1.12.3
 chardet==3.0.4
 constantly==15.1.0
-cryptography==2.7
+cryptography==3.2
 cssselect==1.1.0
 cv-bridge==1.11.11
 cycler==0.10.0
