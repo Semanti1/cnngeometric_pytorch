@@ -135,7 +135,7 @@ tf2-ros==0.5.12
 torch==1.2.0
 torchvision==0.4.0
 Twisted==19.7.0
-urllib3==1.25.3
+urllib3==1.26.5
 w3lib==1.21.0
 xacro==1.10.6
 zope.interface==4.6.0
