@@ -134,7 +134,7 @@ tf2-py==0.5.12
 tf2-ros==0.5.12
 torch==1.2.0
 torchvision==0.4.0
-Twisted==19.7.0
+Twisted==22.4.0
 urllib3==1.25.3
 w3lib==1.21.0
 xacro==1.10.6
