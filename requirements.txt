@@ -119,7 +119,7 @@ rqt-web==0.3.12
 rviz==1.11.10
 scikit-image==0.15.0
 scipy==1.3.1
-Scrapy==1.7.3
+Scrapy==2.6.1
 sensor-msgs==1.12.3
 service-identity==18.1.0
 six==1.12.0
