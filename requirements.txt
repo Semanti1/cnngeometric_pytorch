@@ -42,7 +42,7 @@ numpy==1.17.0
 opencv-contrib-python==4.1.0.25
 pandas==0.25.0
 parsel==1.5.2
-Pillow==6.1.0
+Pillow==9.3.0
 plotly==4.1.0
 pluginlib==1.10.1
 pyasn1==0.4.6
