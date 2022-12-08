@@ -6,7 +6,7 @@ bondpy==1.7.16
 camera-calibration==1.12.15
 camera-calibration-parsers==1.11.10
 catkin==0.6.16
-certifi==2019.6.16
+certifi==2022.12.7
 cffi==1.12.3
 chardet==3.0.4
 constantly==15.1.0
